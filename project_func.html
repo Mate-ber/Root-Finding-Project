@@ -26,6 +26,12 @@
 
 <h2>Output Data</h2>
 
+
+<p id="demo5"></p>
+<p id="demo6"></p>
+<p id="demo7"></p>
+<p id="demo8"></p>
+
 <p id="demo1"></p>
 <p id="demo2"></p>
 <p id="demo3"></p>
@@ -40,6 +46,7 @@
 
 const  eps=1e-9;
 const  alp=1e-3;
+const  epsf=1e-4;
 
 let iter1;
 let iter2;
@@ -57,6 +64,11 @@ let arr_draw1 = [];
 let arr_draw2 = [];
 let arr_draw3 = [];
 let arr_draw4 = [];
+
+let found1=true;
+let found2=true;
+let found3=true;
+let found4=true;
 
 
 function axar(x, i){
@@ -95,11 +107,15 @@ function Bisection(l , r){
 			iter1=it;
 			result1=(l+r)/2;
         	document.getElementById("demo1").innerHTML ="Bisection failed.";
+			found1=false;
         	return;
 		}
 	}
 	iter1=it;
 	result1=(l+r)/2;
+	if(Math.abs(f(result1))>epsf){
+		found1=false;
+	}
 	document.getElementById("demo1").innerHTML ="Bisection result:"+(l+r)/2 +", Itterations: " +it;
 }
 function FixedPoint(g){
@@ -116,12 +132,16 @@ function FixedPoint(g){
 			iter2=it;
 			result2=g;
         	document.getElementById("demo2").innerHTML ="Fixed Point failed.";
+			found2=false;
         	return;
 		}
         g=g_next;
     }
 	iter2=it;
 	result2=g;
+	if(Math.abs(f(result2))>epsf){
+		found2=false;
+	}
     document.getElementById("demo2").innerHTML ="FixedPoint result: "+g+", Itterations: "+it;
 }
 function  Newton(g){
@@ -139,11 +159,15 @@ function  Newton(g){
 			iter3=it;
 			result3=g;
 			document.getElementById("demo3").innerHTML ="Newtion failed.";
+			found3=false;
         	return;
 		}
 	}
 	iter3=it;
 	result3=g;
+	if(Math.abs(f(result3))>epsf){
+		found3=false;
+	}
 	document.getElementById("demo3").innerHTML ="Newton result: "+g+", Itterations:"+it;
 }
 
@@ -187,15 +211,19 @@ function  BisectionPlusNewton( l, r, g){
 			iter4=it;
 			result4=g;
 			document.getElementById("demo4").innerHTML ="Bisection + Newton failed.";
+			found4=false;
         	return;
 		}
 	}
 	iter4=it;
 	result4=(l+r)/2;
+	if(Math.abs(f(result4))>epsf){
+		found4=false;
+	}
 	document.getElementById("demo4").innerHTML ="Bisection + Newton result: "+(l+r)/2+", Itterations: "+it;
 }
 function project_main(){
-	
+	initial()
 	let l = new Number(document.getElementById("numb_l").value);
 	let r = new Number(document.getElementById("numb_r").value);
     let g = new Number(document.getElementById("numb_g").value);
@@ -210,9 +238,19 @@ function project_main(){
 	FixedPoint(g);
 	Newton(g);
 	BisectionPlusNewton(l, r, g);
+	
+	if(found1)document.getElementById("demo5").innerHTML ="Bisection result found";
+	else document.getElementById("demo5").innerHTML ="Bisection result not found";
+	if(found2)document.getElementById("demo6").innerHTML ="Fixed point result found";
+	else document.getElementById("demo6").innerHTML ="Fixed point result not found";
+	if(found3)document.getElementById("demo7").innerHTML ="Newton result found";
+	else document.getElementById("demo7").innerHTML ="Newton result not found";
+	if(found4)document.getElementById("demo8").innerHTML ="BisectionPlusNewton result found";
+	else document.getElementById("demo8").innerHTML ="BisectionPlusNewton result not found";
+	
 	paint_graph(result1,iter1,result2,iter2,result3,iter3,result4,iter4);
 	paint_itterations();
-	
+	window.console.log(found1, found2, found3, found4);
 	return;
 }
 
@@ -346,16 +384,16 @@ function paint_itterations() {
 
 	let color = ["red","blue", "green", "yellow"];
 	
-	if (cnt1>0) {		
+	if (cnt1>0 && found1) {		
 		frmt_body = frmt_body + get_one_chart_line(1, arr_draw1,color[0] , min_el, height);
 	}
-	if (cnt2>0) {		
+	if (cnt2>0 && found2) {		
 		frmt_body = frmt_body + get_one_chart_line(2, arr_draw2,color[1] , min_el, height);
 	}
-	if (cnt3>0) {		
+	if (cnt3>0 && found3) {		
 		frmt_body = frmt_body + get_one_chart_line(3, arr_draw3,color[2] , min_el, height);
 	}
-	if (cnt4>0) {		
+	if (cnt4>0 && found4) {		
 		frmt_body = frmt_body + get_one_chart_line(4, arr_draw4,color[3] , min_el, height);
 	}
 				
@@ -364,7 +402,17 @@ function paint_itterations() {
    return 0;
 
 }
+ function initial(){
+    arr_draw1 = [];
+    arr_draw2 = [];
+    arr_draw3 = [];
+    arr_draw4 = [];
 
+    found1=true;
+    found2=true;
+    found3=true;
+    found4=true;
+ }
 
 </script>
 
