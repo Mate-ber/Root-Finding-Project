@@ -1,0 +1,374 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+<h1>Project Testing</h1>
+
+<h2>Input Data</h2>
+<table>
+<tr>
+<td>Left Bounder</td><td>Right Bounder</td><td>Initial Guess</td>
+</tr>
+<tr>
+<td><input id="numb_l"  value="-1"></td><td><input id="numb_r"  value="8"></td><td><input id="numb_g"  value="0.5"></td>
+</tr>
+<tr>
+<td>N</td><td colspan="2"><input id="numb_n"  value="2"></td>
+</tr>
+<tr>
+<td>Coefficients of a polynomial </td><td colspan="2"><input id="numb_coef"  value="1 0 -4"></td>
+</tr>
+</table>
+
+<p><button type="button" onclick="project_main()">Submit</button></p>
+
+<h2>Output Data</h2>
+
+<p id="demo1"></p>
+<p id="demo2"></p>
+<p id="demo3"></p>
+<p id="demo4"></p>
+
+<p id="demo"></p>
+<p id="demo_text"></p>
+
+<p id="graph_itt"></p>
+
+<script>
+
+const  eps=1e-9;
+const  alp=1e-3;
+
+let iter1;
+let iter2;
+let iter3;
+let iter4;
+let result1;
+let result2;
+let result3;
+let result4;
+
+let coeff;
+let n;
+
+let arr_draw1 = [];
+let arr_draw2 = [];
+let arr_draw3 = [];
+let arr_draw4 = [];
+
+
+function axar(x, i){
+	return Math.pow(x, i);
+}
+
+function f(x){
+	let res=0;
+	for (let i=0; i<=n; i++){
+		res+=coef[i]*axar(x,i);
+	}
+	return res;
+}
+
+function fder(x){
+	let res=0;
+	for(let i=1; i<=n; i++){
+		res+=(coef[i]*i)*axar(x,i-1);
+	}
+	return res;
+}
+
+function Bisection(l , r){
+	let it=0;
+	while(l+eps<r){
+		it++;
+		let m= new Number((l+r)/2);
+		arr_draw1.push(r-l);
+		if(f(l)*f(m)<0){
+			r=m;
+		}
+		else{
+			l=m;
+		}
+        if(it>10000){
+			iter1=it;
+			result1=(l+r)/2;
+        	document.getElementById("demo1").innerHTML ="Bisection failed.";
+        	return;
+		}
+	}
+	iter1=it;
+	result1=(l+r)/2;
+	document.getElementById("demo1").innerHTML ="Bisection result:"+(l+r)/2 +", Itterations: " +it;
+}
+function FixedPoint(g){
+    let it=0;
+    while(true){
+        it++;
+        let g_next=new Number(g-alp*f(g));
+		arr_draw2.push(g_next-g);
+        if (Math.abs(g_next-g)<eps) {
+            g=g_next;
+            break;
+        }
+        if(it>10000){
+			iter2=it;
+			result2=g;
+        	document.getElementById("demo2").innerHTML ="Fixed Point failed.";
+        	return;
+		}
+        g=g_next;
+    }
+	iter2=it;
+	result2=g;
+    document.getElementById("demo2").innerHTML ="FixedPoint result: "+g+", Itterations: "+it;
+}
+function  Newton(g){
+	let it=0;
+	while(true){
+		it++;
+		let g_next= new Number(g-f(g)/fder(g));
+		arr_draw3.push(g_next-g);
+		if(Math.abs(g_next-g)<=eps){
+			g=g_next;
+			break;
+		}
+		g=g_next;
+        if(it>10000){
+			iter3=it;
+			result3=g;
+			document.getElementById("demo3").innerHTML ="Newtion failed.";
+        	return;
+		}
+	}
+	iter3=it;
+	result3=g;
+	document.getElementById("demo3").innerHTML ="Newton result: "+g+", Itterations:"+it;
+}
+
+function  BisectionPlusNewton( l, r, g){
+
+	let it=0;
+
+	while(r-l>eps){
+		it++;
+		let m= new Number((l+r)/2);
+		let new_g=new Number(g-f(g)/fder(g));	
+		if(Math.abs(new_g-g)<=eps){
+			iter4=it;
+			result4=new_g;
+			document.getElementById("demo4").innerHTML ="Bisection plus newton result: "+new_g+", Itterations: "+it;
+			return;	
+		}
+		else if(f(l)*f(m)<0){
+			r=m;
+			if(l<=new_g && new_g<=r){
+				arr_draw4.push(new_g-g);
+				g=new_g;
+			}
+			else{
+			arr_draw4.push(r-l);
+				g=(l+r)/2;
+			}
+		}
+		else{
+			l=m;
+			if(l<=new_g && new_g<=r){
+				arr_draw4.push(new_g-g);
+				g=new_g;
+			}
+			else{
+				arr_draw4.push(r-l);
+				g=(l+r)/2;
+			}	
+		}
+        if(it>10000){
+			iter4=it;
+			result4=g;
+			document.getElementById("demo4").innerHTML ="Bisection + Newton failed.";
+        	return;
+		}
+	}
+	iter4=it;
+	result4=(l+r)/2;
+	document.getElementById("demo4").innerHTML ="Bisection + Newton result: "+(l+r)/2+", Itterations: "+it;
+}
+function project_main(){
+	
+	let l = new Number(document.getElementById("numb_l").value);
+	let r = new Number(document.getElementById("numb_r").value);
+    let g = new Number(document.getElementById("numb_g").value);
+	n = new Number(document.getElementById("numb_n").value);
+	
+	let coef_str = (document.getElementById("numb_coef").value);
+	coef = coef_str.split(" ");
+	//window.console.log(coef);
+	
+	
+    Bisection(l , r);
+	FixedPoint(g);
+	Newton(g);
+	BisectionPlusNewton(l, r, g);
+	paint_graph(result1,iter1,result2,iter2,result3,iter3,result4,iter4);
+	paint_itterations();
+	
+	return;
+}
+
+
+function paint_graph(r1,it1,r2, it2, r3, it3, r4, it4) {
+
+  //document.getElementById("demo_text").innerHTML = "Bisects: " + r1 + " " + it1+ ", Fixed: " + r2 + " " + it2 + ", Newton: " + r3 + " " +  it3 + ", Joined: "  +r4 + " " + it4;
+  
+  document.getElementById("demo_text").innerHTML = "Bisects: " + it1 + " " + ", Fixed: " + " " + it2 + ", Newton: " + " " +  it3 + ", Bisection + Newton: " + " " + it4;
+
+  let frmt_header = '<svg version="1.1" baseProfile="full" width="600" height="300" xmlns="http://www.w3.org/2000/svg">';
+  let frmt_footer = '</svg>';
+  
+  let frmt_body;
+  let max_height=0;
+  
+  if ((it1<10000) && (max_height<it1)) {max_height = it1;}
+  if ((it2<10000) && (max_height<it2)) {max_height = it2;}
+  if ((it3<10000) && (max_height<it3)) {max_height = it3;}
+  if ((it4<10000) && (max_height<it4)) {max_height = it4;}
+  if (max_height == 0 ) {max_height=10000;}
+  
+  it1 = Math.log(it1);
+  it2 = Math.log(it2);
+  it3 = Math.log(it3);
+  it4 = Math.log(it4);
+  max_height = Math.log(max_height);
+  
+  let height;
+  let offset;
+  frmt_body = frmt_body + '<line x1="100" x2="100" y1="270" y2="10" stroke="gray" stroke-width="2"/>';
+  
+  frmt_body = frmt_body + '<line x1="100" x2="590" y1="270" y2="270" stroke="gray" stroke-width="2"/>';
+   
+  frmt_body = frmt_body + '<text x="80" y="100"  writing-mode="tb">Itterations</text>';
+  if (iter1<10000){
+    
+	height = 200*it1/max_height;
+	offset = 250 - height ;
+	//window.console.log(height + ' ,' + offset + ' ' + max_height);
+    frmt_body = frmt_body + ' <rect x="160" y="' + offset + '" width="30" height="' + height + '" stroke="red" fill="red" stroke-width="2"/>' ; 
+  }
+  if (iter2<10000){
+  	height = 200*it2/max_height;
+	offset = 250 - height ;
+	//window.console.log(height + ' ,' + offset);
+	frmt_body = frmt_body + ' <rect x="260" y="' + offset + '" width="30" height="' + height + '" stroke="blue" fill="blue" stroke-width="2"/>' ; 
+  }
+  if (iter3<10000){
+  	height = 200*it3/max_height;
+	offset = 250 - height ;
+	//window.console.log(height + ' ,' + offset);
+	frmt_body = frmt_body + ' <rect x="360" y="' + offset + '" width="30" height="' + height + '" stroke="green" fill="green" stroke-width="2"/>' ; 
+  }
+  if (iter4<10000){
+  	height = 200*it4/max_height;
+	offset = 250 - height ;
+	//window.console.log(height + ' ,' + offset);
+	frmt_body = frmt_body + ' <rect x="460" y="' + offset + '" width="30" height="' + height + '" stroke="yellow" fill="yellow" stroke-width="2"/>' ; 
+  }
+  frmt_body = frmt_body + '<text x="140" y="300">Biscetion</text>';
+  frmt_body = frmt_body + '<text x="230" y="300">Fixed Point</text>';
+  frmt_body = frmt_body + '<text x="340" y="300">Newton</text>';
+  frmt_body = frmt_body + '<text x="440" y="300">Bisection+Newton</text>';
+  
+  document.getElementById("demo").innerHTML = frmt_header + frmt_body + frmt_footer;
+		
+}
+
+function get_one_chart_line(n, p_arr, p_color, p_min_el, p_height, p_total_cnt){
+
+	    let result = '';
+		let x,y,pth;
+		let p_cnt = p_arr.length;
+		let r_cnt = p_cnt;
+		if (r_cnt>50) {r_cnt=50;}
+		let ii=0;
+		p_x = Math.round((480/(r_cnt-1)));
+		x= 105;
+		y= 250 - n*2 - Math.floor(250*(p_arr[0]-p_min_el)/p_height);
+		pth = "M" + x +" " + y+ ' ';
+		result = result +'<circle cx="' + x + '" cy="' + y + '" r="2" fill="' + p_color + '" />';
+		while (ii<p_cnt){
+		    ii = ii + Math.floor(p_cnt/50)+1;
+			if (ii<p_cnt){
+			x =105+ii*p_x;
+			y = 250 - n*2 - Math.floor(250*(p_arr[ii]-p_min_el)/p_height);
+			pth = pth + 'L'+ x +" " + y + ' ';			
+			result = result +'<circle cx="' + x + '" cy="' + y + '" r="2" fill="' + p_color + '" />';
+			}
+		}
+		if (ii<p_cnt-1) {
+		    ii = p_cnt-1;
+			x =105+ii*p_x;
+			y = 250 - n*2 - Math.floor(250*(p_arr[ii]-p_min_el)/p_height);
+			pth = pth + 'L'+ x +" " + y + ' ';			
+			result = result +'<circle cx="' + x + '" cy="' + y + '" r="2" fill="' + p_color + '" />';
+		}
+		result = result + '<path d="' + pth + '" fill="transparent" stroke="' + p_color + '" />';
+        return result;
+}
+
+
+function paint_itterations() {
+
+	let cnt1 = arr_draw1.length;
+	let cnt2 = arr_draw2.length;
+	let cnt3 = arr_draw3.length;
+	let cnt4 = arr_draw4.length;
+	
+	let arr_draw = arr_draw1;
+	arr_draw = arr_draw.concat(arr_draw2);
+	arr_draw = arr_draw.concat(arr_draw3);
+	arr_draw = arr_draw.concat(arr_draw4);
+	
+	let min_el = arr_draw.reduce((a, b) => {return Math.min(a, b);});
+	let max_el = arr_draw.reduce((a, b) => {return Math.max(a, b);});
+	
+	let cnt = Math.max(cnt1,cnt2,cnt3,cnt4);
+	
+	let height = max_el - min_el
+	
+	let frmt_header = '<svg version="1.1" baseProfile="full" width="600" height="300" xmlns="http://www.w3.org/2000/svg">';
+    let frmt_footer = '</svg>';
+  
+    let frmt_body;
+	
+	frmt_body = frmt_body + '<line x1="100" x2="100" y1="270" y2="1" stroke="gray" stroke-width="2"/>';  
+    frmt_body = frmt_body + '<line x1="100" x2="600" y1="270" y2="270" stroke="gray" stroke-width="2"/>';
+	
+
+	let color = ["red","blue", "green", "yellow"];
+	
+	if (cnt1>0) {		
+		frmt_body = frmt_body + get_one_chart_line(1, arr_draw1,color[0] , min_el, height);
+	}
+	if (cnt2>0) {		
+		frmt_body = frmt_body + get_one_chart_line(2, arr_draw2,color[1] , min_el, height);
+	}
+	if (cnt3>0) {		
+		frmt_body = frmt_body + get_one_chart_line(3, arr_draw3,color[2] , min_el, height);
+	}
+	if (cnt4>0) {		
+		frmt_body = frmt_body + get_one_chart_line(4, arr_draw4,color[3] , min_el, height);
+	}
+				
+    document.getElementById('graph_itt').innerHTML = frmt_header + frmt_body + frmt_footer;
+   
+   return 0;
+
+}
+
+
+</script>
+
+</body>
+</html>
+
+
