@@ -4,7 +4,7 @@
 </head>
 <body>
 
-<h1>Project Testing</h1>
+<h1>Root Finding For Polynomials</h1>
 
 <h2>Input Data</h2>
 <table>
@@ -286,26 +286,26 @@ function paint_graph(r1,it1,r2, it2, r3, it3, r4, it4) {
   frmt_body = frmt_body + '<line x1="100" x2="590" y1="270" y2="270" stroke="gray" stroke-width="2"/>';
    
   frmt_body = frmt_body + '<text x="80" y="100"  writing-mode="tb">Itterations</text>';
-  if (iter1<10000){
+  if (iter1<10000 && found1){
     
 	height = 200*it1/max_height;
 	offset = 250 - height ;
 	//window.console.log(height + ' ,' + offset + ' ' + max_height);
     frmt_body = frmt_body + ' <rect x="160" y="' + offset + '" width="30" height="' + height + '" stroke="red" fill="red" stroke-width="2"/>' ; 
   }
-  if (iter2<10000){
+  if (iter2<10000 && found2){
   	height = 200*it2/max_height;
 	offset = 250 - height ;
 	//window.console.log(height + ' ,' + offset);
 	frmt_body = frmt_body + ' <rect x="260" y="' + offset + '" width="30" height="' + height + '" stroke="blue" fill="blue" stroke-width="2"/>' ; 
   }
-  if (iter3<10000){
+  if (iter3<10000 && found3){
   	height = 200*it3/max_height;
 	offset = 250 - height ;
 	//window.console.log(height + ' ,' + offset);
 	frmt_body = frmt_body + ' <rect x="360" y="' + offset + '" width="30" height="' + height + '" stroke="green" fill="green" stroke-width="2"/>' ; 
   }
-  if (iter4<10000){
+  if (iter4<10000 && found4){
   	height = 200*it4/max_height;
 	offset = 250 - height ;
 	//window.console.log(height + ' ,' + offset);
@@ -318,6 +318,16 @@ function paint_graph(r1,it1,r2, it2, r3, it3, r4, it4) {
   
   document.getElementById("demo").innerHTML = frmt_header + frmt_body + frmt_footer;
 		
+}
+
+function get_one_chart_label(n, p_color, p_label){
+	let result = '';
+	let x,y;
+	x = 5;
+	y = (n-1) * 60 +20;
+	result =  ' <rect x="' + x + '" y="' + y + '" width="50" height="5" stroke="black" fill="'+ p_color +'" stroke-width="1"/> '  + 
+	'<text x="' + x + '" y="' + (y+30) +'">' + p_label + '</text>';	
+	return result;
 }
 
 function get_one_chart_line(n, p_arr, p_color, p_min_el, p_height, p_total_cnt){
@@ -386,16 +396,21 @@ function paint_itterations() {
 	
 	if (cnt1>0 && found1) {		
 		frmt_body = frmt_body + get_one_chart_line(1, arr_draw1,color[0] , min_el, height);
+		frmt_body = frmt_body + get_one_chart_label(1, color[0], "Bisection");
 	}
 	if (cnt2>0 && found2) {		
 		frmt_body = frmt_body + get_one_chart_line(2, arr_draw2,color[1] , min_el, height);
+		frmt_body = frmt_body + get_one_chart_label(2, color[1], "Fixed point");
 	}
 	if (cnt3>0 && found3) {		
 		frmt_body = frmt_body + get_one_chart_line(3, arr_draw3,color[2] , min_el, height);
+		frmt_body = frmt_body + get_one_chart_label(3, color[2], "Newton");
 	}
 	if (cnt4>0 && found4) {		
 		frmt_body = frmt_body + get_one_chart_line(4, arr_draw4,color[3] , min_el, height);
+		frmt_body = frmt_body + get_one_chart_label(4, color[3], "B + N");
 	}
+		
 				
     document.getElementById('graph_itt').innerHTML = frmt_header + frmt_body + frmt_footer;
    
