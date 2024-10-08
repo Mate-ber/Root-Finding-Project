@@ -4,6 +4,8 @@ This project is a web application built firstly in C++ and than translated to HT
 
 Project Uses Four different root finding algorithms: Bisection method, Fixed point method, Newton method and combination of Bisection and Newton method.
 
+---
+
 ## **How to use it and what it does**
 
 **How to use it**
