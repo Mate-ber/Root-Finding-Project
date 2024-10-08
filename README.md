@@ -1,6 +1,6 @@
 # **Root Finding**
 
-This group project is a web application built firstly in C++ and then translating to HTML for hosting reasons.
+This project is a web application built firstly in C++ and than translated to HTML for hosting reasons.
 
 Project Uses Four different root finding algorithms: Bisection method, Fixed point method, Newton method and combination of Bisection and Newton method.
 
@@ -8,15 +8,15 @@ Project Uses Four different root finding algorithms: Bisection method, Fixed poi
 
 **How to use it**
 
-This project can find to any power polynomial (For example: x^2 + x - 4 = 0) if given enough time and not awful initial guesses. 
+This project can find the root to any powered polynomial if given enough time and not awful initial guesses (For example: x^2 + x - 4 = 0). 
 
 You need to input firstly l (lower bound) and r (upper bound), the initial guess of x, the highest power of x and coefficients of each variable from (x^0 + ... +x^n) in this polynomial.
 
 **What it does**
 
-It will give answer for each of the methods if it found the answer, answer and how many itterations it needed.
+For each of the methods if it finds the answer it will give us the answer itself and how many itterations it needs.
 
-Also it will give us two graphs, first one shows itterations by graph and second one shows the distance between final answer (if found) and guess for each itteration.
+Also it will give us two graphs, first one shows itterations by graph and second one shows the distance between final answer (if found) and guessed number for each itteration.
 
 
 ## **How to access it**
@@ -35,11 +35,11 @@ You can clone repository using:
 ```bash
 https://github.com/Mate-ber/Root-Finding-Project.git
 ```
- After downloading just simply host it locally
+ After downloading just simply host it locally.
 
 **Third way**
 
-You can simply download the file and just run it locally
+You can simply download the file and just run it locally.
 
 ## **Little bit about each algorithm**
 
