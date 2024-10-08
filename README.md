@@ -1,6 +1,6 @@
 # **Root Finding**
 
-This project is a web application built firstly in C++ and than translated to HTML for hosting reasons.
+This project is a web application built firstly in C++ and than translated to HTML ans JS for hosting reasons.
 
 Project Uses Four different root finding algorithms: Bisection method, Fixed point method, Newton method and combination of Bisection and Newton method.
 
